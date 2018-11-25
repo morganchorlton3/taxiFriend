@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "194859681742",
+    "firebase_url": "https://taxifriend-bdfc8.firebaseio.com",
+    "project_id": "taxifriend-bdfc8",
+    "storage_bucket": "taxifriend-bdfc8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194859681742:android:1add697df4dd653c",
+        "android_client_info": {
+          "package_name": "com.lilly.taxifirend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "194859681742-g20mpn5amvvcf4ng0vi0q6ikreqonrmv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWLrUvtc1eyvAWJ_TVNCcV4pL_xQeUxf0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,13 @@
-import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { NavController, Platform, ToastController } from 'ionic-angular';
+import { Subscription } from 'rxjs/Subscription';
+import { Geolocation } from '@ionic-native/geolocation';
+import { Observable } from 'rxjs';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { LoginPage } from '../login/login';
+
+declare var google;
 
 @Component({
   selector: 'page-home',
@@ -7,8 +15,128 @@ import { NavController } from 'ionic-angular';
 })
 export class HomePage {
 
-  constructor(public navCtrl: NavController) {
+  @ViewChild('map') mapElement: ElementRef;
+  map: any;
+  currentMapTrack = null;
+
+  isTracking = false;
+  trackedRoute = [];
+  previousTracks = [];
+
+  userData : Observable<any>
+
+  positionSubscription: Subscription;
+
+  constructor(public navCtrl: NavController,private toast: ToastController, private afDatabase: AngularFireDatabase,private afAuth: AngularFireAuth, private plt: Platform, public geolocation: Geolocation) {
 
   }
 
+  ionViewDidLoad(){
+    this.plt.ready().then(() => {
+      this.loadMap();
+    })
+    this.afAuth.authState.subscribe(data =>{
+      if(data && data.email && data.uid){
+        this.userData = this.afDatabase.object(`profile/${data.uid}`).valueChanges();﻿
+      }else{
+        this.toast.create({
+          message: `Please Login to view your profile`,
+          duration: 3000
+        }).present();
+        this.navCtrl.push(LoginPage);
+      }
+    })
+  }
+  loadMap(){
+    let latLng = new google.maps.LatLng(53.6466645, -1.7822482);
+ 
+      let mapOptions = {
+        center: latLng,
+        zoom: 14,
+      disableDefaultUI: true,
+      styles: [
+        {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
+        {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
+        {elementType: 'labels.text.fill', stylers: [{color: '#746855'}]},
+        {
+          featureType: 'administrative.locality',
+          elementType: 'labels.text.fill',
+          stylers: [{color: '#d59563'}]
+        },
+        {
+          featureType: 'poi',
+          elementType: 'labels.text.fill',
+          stylers: [{color: '#d59563'}]
+        },
+        {
+          featureType: 'poi.park',
+          elementType: 'geometry',
+          stylers: [{color: '#263c3f'}]
+        },
+        {
+          featureType: 'poi.park',
+          elementType: 'labels.text.fill',
+          stylers: [{color: '#6b9a76'}]
+        },
+        {
+          featureType: 'road',
+          elementType: 'geometry',
+          stylers: [{color: '#38414e'}]
+        },
+        {
+          featureType: 'road',
+          elementType: 'geometry.stroke',
+          stylers: [{color: '#212a37'}]
+        },
+        {
+          featureType: 'road',
+          elementType: 'labels.text.fill',
+          stylers: [{color: '#9ca5b3'}]
+        },
+        {
+          featureType: 'road.highway',
+          elementType: 'geometry',
+          stylers: [{color: '#746855'}]
+        },
+        {
+          featureType: 'road.highway',
+          elementType: 'geometry.stroke',
+          stylers: [{color: '#1f2835'}]
+        },
+        {
+          featureType: 'road.highway',
+          elementType: 'labels.text.fill',
+          stylers: [{color: '#f3d19c'}]
+        },
+        {
+          featureType: 'transit',
+          elementType: 'geometry',
+          stylers: [{color: '#2f3948'}]
+        },
+        {
+          featureType: 'transit.station',
+          elementType: 'labels.text.fill',
+          stylers: [{color: '#d59563'}]
+        },
+        {
+          featureType: 'water',
+          elementType: 'geometry',
+          stylers: [{color: '#17263c'}]
+        },
+        {
+          featureType: 'water',
+          elementType: 'labels.text.fill',
+          stylers: [{color: '#515c6d'}]
+        },
+        {
+          featureType: 'water',
+          elementType: 'labels.text.stroke',
+          stylers: [{color: '#17263c'}]
+        },
+      ]
+      }
+
+      this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+ 
+  }
 }
