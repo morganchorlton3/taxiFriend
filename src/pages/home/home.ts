@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { LoginPage } from '../login/login';
+import { map } from 'rxjs/operators';
 
 declare var google;
 
@@ -28,12 +29,49 @@ export class HomePage {
   positionSubscription: Subscription;
 
   constructor(public navCtrl: NavController,private toast: ToastController, private afDatabase: AngularFireDatabase,private afAuth: AngularFireAuth, private plt: Platform, public geolocation: Geolocation) {
+    this.geolocation.getCurrentPosition().then(pos => {
+      let latLng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+      let marker = new google.maps.Marker({
+        map: this.map,
+        position: latLng,
+        icon: { url : '../assets/icon/user.png' },
+      });
+    }).catch((error) => {
+      console.log('Error getting location', error);
+    });  
+  }
+  addUserMarker(){
 
+    this.geolocation.getCurrentPosition().then(pos => {
+      let latLng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+      let marker = new google.maps.Marker({
+        map: this.map,
+        position: latLng,
+        icon: { url : '../assets/icon/user.png' },
+      });
+    }).catch((error) => {
+      console.log('Error getting location', error);
+    });  
+  }
+  locateMe(){
+    this.geolocation.getCurrentPosition().then(pos => {
+      let latLng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+      this.map.setCenter(latLng);
+    }).catch((error) => {
+      console.log('Error getting location', error);
+    });  
   }
 
   ionViewDidLoad(){
     this.plt.ready().then(() => {
       this.loadMap();
+      this.geolocation.getCurrentPosition().then(pos => {
+        let latLng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+        this.map.setCenter(latLng);
+        this.map.setZoom(16);
+      }).catch((error) => {
+        console.log('Error getting location', error);
+      });
     })
     this.afAuth.authState.subscribe(data =>{
       if(data && data.email && data.uid){
