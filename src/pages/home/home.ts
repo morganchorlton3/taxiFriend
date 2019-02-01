@@ -42,17 +42,23 @@ export class HomePage {
   }
   addUserMarker(){
 
+    var myArray = [new google.maps.LatLng(55.4986562, -3.4003268000000004), new google.maps.LatLng(53.4986562, -6.4003268000000004), new google.maps.LatLng(52.4986562, -5.4003268000000004)]; 
+
     this.geolocation.getCurrentPosition().then(pos => {
-      let latLng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+      let latLng = myArray[Math.floor(Math.random() * myArray.length)];
       let marker = new google.maps.Marker({
         map: this.map,
         position: latLng,
-        icon: { url : '../assets/icon/user.png' },
+        icon: { url : '../assets/icon/taxi.png' },
       });
     }).catch((error) => {
       console.log('Error getting location', error);
     });  
   }
+  random(): number {
+    let rand = Math.floor(Math.random()*2);
+    return rand;       
+ }
   locateMe(){
     this.geolocation.getCurrentPosition().then(pos => {
       let latLng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
